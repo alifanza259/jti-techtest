@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .outer {
+            width: 20%;
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            border-radius: 15px;
+            border-style: hidden;
+            box-shadow: 0 0 0 1px black;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table-body {
+            padding-left: 15px;
+            padding-right: 15px;
+            text-align: left;
+        }
+
+        .buttons {
+            text-align: right;
+            padding-bottom: 15px;
+            padding-right: 15px;
+            padding-top: 10px;
+        }
+
+        select {
+            width: 100%;
+        }
+
+        #noHandphone {
+            width: 96%;
+        }
+
+        input,
+        select {
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+
+        .userdata {
+            cursor: default;
+        }
+    </style>
+    <script>
+        (function () {
+            if (sessionStorage.getItem('googleUserCreds') == null) {
+                //Redirect to login page, no user entity available in sessionStorage
+                window.location.href = 'homepage';
+            }
+        })();
+
+        const socket = new WebSocket("ws://localhost:3005/ws")
+        socket.onmessage = (async ({ data }) => {
+            const dataObj = JSON.parse(data)
+            if (dataObj.type === "input") {
+                const audio = new Audio('https://bucket-alif.s3.ap-southeast-1.amazonaws.com/sfx.mp3')
+                audio.play()
+
+                const dataEl = document.getElementById("data")
+                const { id, no_handphone: noHandphone, provider } = dataObj.user
+
+
+                if (noHandphone % 2 == 1) {
+                    if (window.oddIndex >= window.evenIndex) {
+                        const tbodyEl = document.getElementById("data")
+                        tbodyEl.innerHTML = tbodyEl.innerHTML + `
+                <tr>
+                    <td class="userdata" onmouseover="changeColor(this, true);"
+                        onmouseout="changeColor(this, false);" onclick="saveState(this);">${`${id}-${noHandphone}-${provider}`}</td>
+                    <td></td>
+                </tr>
+                `
+                        window.oddIndex += 1
+                    } else {
+                        const y = dataEl.rows[window.oddIndex]
+                        const z = y.getElementsByTagName("td")[0]
+
+                        z.classList.add("userdata")
+                        z.innerHTML = `${dataObj.user.id}-${dataObj.user.no_handphone}-${dataObj.user.provider}`
+
+                        z.addEventListener("mouseover", function () {
+                            changeColor(z, true)
+                        })
+                        z.addEventListener("mouseout", function () {
+                            changeColor(z, false)
+                        })
+                        z.addEventListener("click", function () {
+                            saveState(z)
+                        })
+
+                        window.oddIndex += 1
+                    }
+                } else {
+                    if (window.evenIndex >= window.oddIndex) {
+                        const tbodyEl = document.getElementById("data")
+                        tbodyEl.innerHTML = tbodyEl.innerHTML + `
+                <tr>
+                    <td></td>
+                    <td class="userdata" onmouseover="changeColor(this, true);"
+                        onmouseout="changeColor(this, false);" onclick="saveState(this);">${`${id}-${noHandphone}-${provider}`}</td>
+                </tr>
+                `
+                        window.evenIndex += 1
+                    } else {
+                        const y = dataEl.rows[window.evenIndex]
+                        const z = y.getElementsByTagName("td")[1]
+
+                        z.classList.add("userdata")
+                        z.innerHTML = `${dataObj.user.id}-${dataObj.user.no_handphone}-${dataObj.user.provider}`
+
+                        z.addEventListener("mouseover", function () {
+                            changeColor(z, true)
+                        })
+                        z.addEventListener("mouseout", function () {
+                            changeColor(z, false)
+                        })
+                        z.addEventListener("click", function () {
+                            saveState(z)
+                        })
+
+                        window.evenIndex += 1
+                    }
+                }
+
+            }
+            console.log("atas")
+        })
+
+        let selectedTableRow = null
+        let selectedId = 0;
+
+        function changeColor(tableRow, highLight) {
+            if (highLight) {
+                tableRow.style.backgroundColor = '#dcfac9';
+            }
+            else {
+                if (selectedId !== tableRow.innerHTML.split("-")[0])
+                    tableRow.style.backgroundColor = 'white';
+            }
+        }
+
+        function saveState(tableRow) {
+            if (selectedId === tableRow.innerHTML.split("-")[0]) return
+
+            if (selectedTableRow) {
+                selectedTableRow.style.backgroundColor = 'white'
+            }
+            selectedId = tableRow.innerHTML.split("-")[0]
+            selectedTableRow = tableRow
+
+            document.getElementById("delete-btn").disabled = false
+            document.getElementById("edit-btn").disabled = false
+        }
+
+        async function edit() {
+            const apiUrl = "http://localhost:3005/user"
+            try {
+                const newNoHandphone = document.getElementById("edit-field").value
+                if (!newNoHandphone) {
+                    alert("Nomor baru tidak boleh kosong")
+                    return
+                }
+                const response = await fetch(apiUrl, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: selectedId,
+                        no_handphone: newNoHandphone
+                    })
+                })
+                if (!response.ok) throw new Error(response)
+                alert("Sukses")
+                location.reload()
+            } catch (error) {
+                console.error(error)
+                alert("Maaf terjadi kesalahan")
+            }
+        }
+
+        async function deleteEntry() {
+            const apiUrl = "http://localhost:3005/user/" + selectedId
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "DELETE",
+                })
+                if (!response.ok) throw new Error(response)
+                alert("Sukses")
+                location.reload()
+            } catch (error) {
+                console.error(error)
+                alert("Maaf terjadi kesalahan")
+            }
+        }
+
+
+        function logout() {
+            //Don't forget to clear sessionStorage when user logs out
+            sessionStorage.clear();
+            window.location.href = 'homepage';
+        }
+    </script>
+    <title>Output Data</title>
+</head>
+
+<body>
+    <table class="outer">
+        <tr>
+            <td style="border: 1px solid black;">
+                <p> <b> Output </b> </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <table id="inner">
+                    <thead>
+                        <td>
+                            Ganjil
+                        </td>
+                        <td>Genap</td>
+                    </thead>
+                    <tbody id="data">
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 30px;">
+                <label for="edit-field">Edit No Handphone:</label>
+                <input type="text" id="edit-field">
+            </td>
+        </tr>
+        <tr>
+            <td class="buttons">
+                <button onclick="edit()" id="edit-btn" disabled>Edit</button>
+                <button onclick="deleteEntry()" id="delete-btn" disabled>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <script>
+        (async function () {
+            let data;
+            const result = await fetch("http://localhost:3005/user")
+            data = await result.json()
+            const tbodyEl = document.getElementById("data")
+
+            window.oddIndex = data.data.oddUsers.length
+            window.evenIndex = data.data.evenUsers.length
+
+            const maxLength = Math.max(data.data.evenUsers.length, data.data.oddUsers.length)
+
+            for (let i = 0; i < maxLength; i++) {
+                const oddUser = data.data.oddUsers[i]
+                const evenUser = data.data.evenUsers[i]
+                tbodyEl.innerHTML += `
+                <tr>
+                    ${oddUser ? `<td class="userdata" onmouseover="changeColor(this, true);"
+                        onmouseout="changeColor(this, false);" onclick="saveState(this);">${`${oddUser.id}-${oddUser.no_handphone}-${oddUser.provider}`}</td>` : `<td></td>`}
+                    ${evenUser ? `<td class="userdata" onmouseover="changeColor(this, true);"
+                        onmouseout="changeColor(this, false);" onclick="saveState(this);">${`${evenUser.id}-${evenUser.no_handphone}-${evenUser.provider}`}</td> ` : `<td></td>`}
+                </tr>
+                `
+            }
+        }())
+    </script>
+</body>
+
+</html>

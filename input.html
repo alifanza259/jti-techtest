@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table {
+            width: 14%;
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            border-radius: 15px;
+            border-style: hidden;
+            box-shadow: 0 0 0 1px black;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table-body {
+            padding-left: 15px;
+            padding-right: 15px;
+            text-align: left;
+        }
+
+        .buttons {
+            text-align: right;
+            padding-bottom: 15px;
+            padding-right: 15px;
+            padding-top: 10px;
+        }
+
+        select {
+            width: 100%;
+        }
+
+        #noHandphone {
+            width: 96%;
+        }
+
+        input,
+        select {
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" defer async></script>
+    <script>
+        (function () {
+            if (sessionStorage.getItem('googleUserCreds') == null) {
+                //Redirect to login page, no user entity available in sessionStorage
+                window.location.href = 'homepage';
+            }
+        })();
+
+        async function submit() {
+            key = CryptoJS.enc.Utf8.parse("example key 1234");
+            let iv = CryptoJS.enc.Utf8.parse("1234567812345678");
+            let encrypted = CryptoJS.AES.encrypt("halohalobandung", key, {
+                iv: iv,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            console.log(encrypted.toString());
+            return
+            const noHandphone = document.getElementById("noHandphone");
+            const provider = document.getElementById("provider")
+
+            if (!noHandphone.value || !provider.value) {
+                alert("Harap isi data yang kosong")
+                return
+            }
+            const encryptedHandphone = CryptoJS.AES.encrypt(noHandphone.value, key, { iv: iv }).toString();
+            const encryptedProvider = CryptoJS.AES.encrypt(provider.value, key, { iv: iv }).toString();
+            const payload = {
+                no_handphone: encryptedHandphone, provider: encryptedProvider
+            }
+
+            const apiUrl = "http://localhost:3005/user"
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                })
+                if (!response.ok) throw new Error(response)
+
+                alert("Sukses")
+                noHandphone.value = ""
+                provider.value = ""
+            } catch (error) {
+                console.error(error)
+                alert("Maaf terjadi kesalahan")
+            }
+
+
+        }
+
+        async function autoGenerate() {
+            const apiUrl = "http://localhost:3005/user/auto"
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                })
+                if (!response.ok) throw new Error(response)
+                alert("Sukses")
+            } catch (error) {
+                console.error(error)
+                alert("Maaf terjadi kesalahan")
+            }
+        }
+
+        function logout() {
+            //Don't forget to clear sessionStorage when user logs out
+            sessionStorage.clear();
+            window.location.href = 'homepage';
+        }
+    </script>
+    <title>Input Data</title>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td style="border: 1px solid black;">
+                <p> <b> Data No Handphone </b> </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="table-body">
+                <form>
+                    <br>
+                    <label for="noHandphone">No Handphone</label><br>
+                    <input type="text" id="noHandphone" name="textfield"><br>
+                    <label for="provider">Provider</label><br>
+                    <select id="provider" name="provider">
+                        <option hidden></option>
+                        <option value="XL">XL</option>
+                        <option value="Telkom">Telkom</option>
+                        <option value="Tri">Tri</option>
+                        <option value="Smartfren">Smartfren</option>
+                    </select>
+                    <br>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td class="buttons">
+                <button onclick="submit()">Save</button>
+                <button onclick="autoGenerate()">Auto</button>
+            </td>
+        </tr>
+    </table>
+
+
+</body>
+
+</html>
