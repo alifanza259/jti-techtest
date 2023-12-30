@@ -14,12 +14,17 @@ socket.onmessage = (async ({ data }) => {
 
         const dataEl = document.getElementById("table-body")
         const { id, no_handphone: noHandphone, provider } = dataObj.handphone
+        const isNewDataOdd = noHandphone % 2 === 1
 
-        if (window.oddIndex >= window.evenIndex) {
+        if (      
+            isNewDataOdd
+            ? window.oddIndex >= window.evenIndex
+            : window.evenIndex >= window.oddIndex
+            ) {
             const tbodyEl = document.getElementById("table-body")
 
             let addElement;
-            if (noHandphone % 2 === 1) {
+            if (isNewDataOdd) {
                 addElement = `
                     <tr>
                         <td class="userdata" onmouseover="changeColor(this, true);"
@@ -41,11 +46,11 @@ socket.onmessage = (async ({ data }) => {
             tbodyEl.innerHTML = tbodyEl.innerHTML + addElement
         } else {
             let tdEl;
-            if (noHandphone % 2 === 1) {
-                row = dataEl.rows[window.oddIndex].getElementsByTagName("td")[0]
+            if (isNewDataOdd) {
+                tdEl = dataEl.rows[window.oddIndex].getElementsByTagName("td")[0]
                 window.oddIndex += 1
             } else {
-                row = dataEl.rows[window.evenIndex].getElementsByTagName("td")[1]
+                tdEl = dataEl.rows[window.evenIndex].getElementsByTagName("td")[1]
                 window.evenIndex += 1
             }
 
