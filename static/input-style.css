@@ -1,0 +1,68 @@
+table {
+    width: 14%;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    border-radius: 15px;
+    border-style: hidden;
+    box-shadow: 0 0 0 1px blue;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-header {
+    border: 1px solid blue;
+}
+
+.table-body {
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: left;
+}
+
+.buttons {
+    text-align: right;
+    padding-bottom: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+}
+
+select {
+    width: 100%;
+}
+
+#noHandphone {
+    width: 96%;
+}
+
+input,
+select {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.save-btn {
+    background-color: #04AA6D;
+    background-image: linear-gradient(to left, #0E703B, #89C33F);
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 4px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.auto-btn {
+    background-color: #04AA6D;
+    background-image: linear-gradient(to left, #00A7E9, #2A3695);
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 4px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}

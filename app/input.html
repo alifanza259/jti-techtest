@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" defer async></script>
+    <link rel="stylesheet" href="/static/input-style.css">
+    <script src="/static/input-script.js" defer async></script>
+    <title>Input Data</title>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td class="table-header">
+                <p> <b> Data No Handphone </b> </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="table-body">
+                <form>
+                    <br>
+                    <label for="noHandphone">No Handphone</label><br>
+                    <input type="text" id="noHandphone" name="textfield"><br>
+                    <label for="provider">Provider</label><br>
+                    <select id="provider" name="provider">
+                        <option hidden></option>
+                        <option value="XL">XL</option>
+                        <option value="Telkom">Telkom</option>
+                        <option value="Tri">Tri</option>
+                        <option value="Smartfren">Smartfren</option>
+                    </select>
+                    <br>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td class="buttons">
+                <button onclick="submit()" class="save-btn">Save</button>
+                <button onclick="autoGenerate()" class="auto-btn">Auto</button>
+            </td>
+        </tr>
+    </table>
+
+
+</body>
+
+</html>

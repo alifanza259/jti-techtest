@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <title>Homepage</title>
+    <style>
+        button {
+            width: 130px;
+            height: 40px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <div class="guest" hidden>
+        <div id="g_id_onload" data-client_id="937947347566-r3rgbamviv91r5jknmm0cvt74inmg9ec.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
+    </div>
+
+    <div class="logged-in" hidden>
+        <button onclick="window.location.href='input'">Go To Input Form</button>
+        <button onclick="window.location.href='output'">Go To Output Form</button>
+        <br><br>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <script>
+        window.handleCredentialResponse = function (googleUser) {
+            const googleUserCreds = googleUser.credential
+            sessionStorage.setItem('googleUserCreds', googleUserCreds);
+            location.reload()
+        };
+
+        (function () {
+            if (sessionStorage.getItem('googleUserCreds') != null) {
+                document.getElementsByClassName("logged-in")[0].removeAttribute("hidden")
+            } else {
+                document.getElementsByClassName("guest")[0].removeAttribute("hidden")
+            }
+        })();
+
+        function logout() {
+            sessionStorage.clear();
+            location.reload()
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+.outer {
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    border-radius: 15px;
+    border-style: hidden;
+    box-shadow: 0 0 0 1px black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#inner {
+    margin-top: 10px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    border-style: hidden;
+    box-shadow: 0 0 0 1px black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-body {
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: left;
+}
+
+.buttons {
+    text-align: right;
+    padding-bottom: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+}
+
+select {
+    width: 100%;
+}
+
+#noHandphone {
+    width: 96%;
+}
+
+input,
+select {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.userdata {
+    cursor: default;
+    border: 1px solid black;
+    text-align: left;
+}
+
+#edit-btn {
+    background-color: #04AA6D;
+    background-image: linear-gradient(to left, #EF4236, #FBAB3F);
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 6px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+#edit-btn:disabled {
+    background-color: grey;
+    background-image: none;
+}
+
+#delete-btn {
+    background-color: #04AA6D;
+    background-image: linear-gradient(to left, #EB1C24, #5C0002);
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 6px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+#delete-btn:disabled {
+    background-color: grey;
+    background-image: none;
+}

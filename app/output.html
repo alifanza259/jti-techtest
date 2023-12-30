@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/output-style.css">
+    <script src="/static/output-script.js"></script>
+    <title>Output Data</title>
+</head>
+
+<body>
+    <table class="outer">
+        <tr>
+            <td style="border: 1px solid black;">
+                <p> <b> Output </b> </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <table id="inner">
+                    <thead style="border: 1px solid black;">
+                        <td>
+                            Ganjil
+                        </td>
+                        <td>Genap</td>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 30px;">
+                <label for="edit-field">Edit No Handphone (Select Cell):</label>
+                <input type="text" id="edit-field">
+            </td>
+        </tr>
+        <tr>
+            <td class="buttons">
+                <button onclick="edit()" id="edit-btn" disabled>Edit</button>
+                <button onclick="deleteEntry()" id="delete-btn" disabled>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <script>
+        (async function () {
+            const result = await fetch("http://localhost:3005/handphone")
+            const data = (await result.json()).data
+            const tbodyEl = document.getElementById("table-body")
+
+            window.oddIndex = data.oddUsers.length
+            window.evenIndex = data.evenUsers.length
+
+            const maxLength = Math.max(data.evenUsers.length, data.oddUsers.length)
+
+            for (let i = 0; i < maxLength; i++) {
+                const oddUser = data.oddUsers[i]
+                const evenUser = data.evenUsers[i]
+                tbodyEl.innerHTML += `
+                <tr>
+                    ${oddUser ? `<td class="userdata" onmouseover="changeColor(this, true);"
+                        onmouseout="changeColor(this, false);" onclick="saveState(this);">${`${oddUser.id}-${oddUser.no_handphone}-${oddUser.provider}`}</td>` : `<td></td>`}
+                    ${evenUser ? `<td class="userdata" onmouseover="changeColor(this, true);"
+                        onmouseout="changeColor(this, false);" onclick="saveState(this);">${`${evenUser.id}-${evenUser.no_handphone}-${evenUser.provider}`}</td> ` : `<td></td>`}
+                </tr>
+                `
+            }
+        }())
+    </script>
+</body>
+
+</html>
